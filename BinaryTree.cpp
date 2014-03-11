@@ -101,15 +101,15 @@ treeNode<T> *buildHelper(T key, treeNode<T> *left, treeNode<T> *right)
 }
 
 // Build Tree
-//        64
-//      /    \
-//    32      96
-//   /  \    /
-//  16  48  80
-//     /  \   \
-//    40  56  88
-//   /          \
-//  36          92
+// |        64        |
+// |      /    \      |
+// |    32      96    |
+// |   /  \    /      |
+// |  16  48  80      |
+// |     /  \   \     |
+// |    40  56  88    |
+// |   /          \   |
+// |  36          92  |
 treeNode<int> *buildTree()
 {
     treeNode<int> *k = buildHelper<int>(92, NULL, NULL);
