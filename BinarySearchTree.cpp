@@ -1,5 +1,5 @@
 //
-// Algorithm Practice - Binary Tree
+// Algorithm Practice - Binary Search Tree
 //
 // Author: Mingjie Li (limingjie0719@gmail.com)
 // Date  : Mar 11, 2014
@@ -13,7 +13,7 @@
 #include <stack> // inOrderTraverseStack
 #include <queue> // breadthTraverseQueue
 
-template<typename T>
+template <typename T>
 class treeNode
 {
 public:
@@ -100,7 +100,7 @@ treeNode<T> *buildHelper(T key, treeNode<T> *left, treeNode<T> *right)
     return node;
 }
 
-// Build Tree
+// Build Search Tree
 // |        64        |
 // |      /    \      |
 // |    32      96    |
