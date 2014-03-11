@@ -9,44 +9,42 @@
 #include <cstdlib> // rand()
 #include <ctime>   // time()
 
-const int MAX = 20;
+const int arraySize = 30;
 
 void print(int *arr)
 {
-    for (int i = 0; i < MAX; i++)
+    for (int i = 0; i < arraySize; i++)
     {
         std::cout << arr[i] << ' ';
     }
     std::cout << std::endl;
 }
 
-void swap(int *a, int *b)
+inline void swap(int &a, int &b)
 {
-    int temp;
-
-    temp = *a;
-    *a = *b;
-    *b = temp;
+    int temp = a;
+    a = b;
+    b = temp;
 }
 
-int *partition(int *arr, int *left, int *right)
+int partition(int *arr, int left, int right, int pivot)
 {
-    int *p = right--;
+    std::cout << "left = " << left
+        << ", right = " << right
+        << ", pivot = " << arr[pivot] << std::endl;
 
-    std::cout << left - arr << ' ' << right - arr << ' ' << *p << std::endl;
-
-    while (right >= left)
+    while (true)
     {
-        while (*left < *p) left++;
-        while (*right >= *p) right--;
+        while (arr[left] < arr[pivot]) left++;
+        while (arr[right] >= arr[pivot]) right--;
 
-        if (right > left)
+        if (left < right)
         {
-            swap(left, right);
+            swap(arr[left], arr[right]);
         }
         else
         {
-            swap(left, p);
+            swap(arr[left], arr[pivot]);
             break;
         }
     }
@@ -55,29 +53,31 @@ int *partition(int *arr, int *left, int *right)
     return left;
 }
 
-void quicksort(int *arr, int *left, int *right)
+void quicksort(int *arr, int left, int right)
 {
+    int pivot;
+
     if (left < right)
     {
-        int *p = partition(arr, left, right);
-        quicksort(arr, left, p - 1);
-        quicksort(arr, p + 1, right);
+        // TODO: better pivot
+        pivot = partition(arr, left, right - 1, right);
+        quicksort(arr, left, pivot - 1);
+        quicksort(arr, pivot + 1, right);
     }
 }
 
 int main()
 {
-    int arr[MAX];
+    int arr[arraySize];
 
-    srand(time(NULL));
-    for (int i = 0; i < MAX; i++)
+    srand((unsigned int)time(NULL));
+    for (int i = 0; i < arraySize; i++)
     {
-        arr[i] = rand() % 300;
+        arr[i] = rand() % 89 + 10;
     }
 
     print(arr);
-    quicksort(arr, arr, arr + MAX - 1);
-    print(arr);
+    quicksort(arr, 0, arraySize - 1);
 
     std::cout << "Press any key to exit." << std::endl;
     std::cin.get();
