@@ -1,3 +1,14 @@
+//
+// Algorithm Practice - Binary Tree
+//
+// Author: Mingjie Li (limingjie0719@gmail.com)
+// Date  : Mar 11, 2014
+//
+// Compiled successfully on:
+// 1. MinGW g++ 4.8.1
+// 2. VS Express 2013
+//
+
 #include <iostream>
 #include <stack> // inOrderTraverseStack
 #include <queue> // breadthTraverseQueue
