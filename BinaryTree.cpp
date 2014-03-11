@@ -124,6 +124,11 @@ treeNode<int> *buildTree()
     treeNode<int> *b = buildHelper<int>(32, d, e);
     treeNode<int> *a = buildHelper<int>(64, b, c);
 
+    std::cout << "== Initialize Tree ==\n"
+        << "      64\n    /    \\\n  32      96\n /  \\    /\n16  48  80\n"
+        << "   /  \\   \\\n  40  56  88\n /          \\\n36          92"
+        << std::endl;
+    
     return a;
 }
 
@@ -131,18 +136,19 @@ int main()
 {
     treeNode<int> *tree = buildTree();
 
-    std::cout << "== Traverse Tree in Order Recusively ==" << std::endl;
+    std::cout << "== Traverse Tree In-order Recusively ==\n";
     inOrderTraverseRecursive<int>(tree);
     std::cout << std::endl;
 
-    std::cout << "== Traverse Tree in Order by Stack ==" << std::endl;
+    std::cout << "== Traverse Tree In-order by Stack ==\n";
     inOrderTraverseStack<int>(tree);
     std::cout << std::endl;
 
-    std::cout << "== Traverse Tree in Breadth Order ==" << std::endl;
+    std::cout << "== Traverse Tree Breadth First ==\n";
     breadthTraverseQueue<int>(tree);
     std::cout << std::endl;
 
+    std::cout << "Press any key to exit." << std::endl;
     std::cin.get();
 
     return 0;
