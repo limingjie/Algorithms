@@ -4,6 +4,10 @@
 // Mingjie Li (limingjie0719@gmail.com)
 // Mar 11, 2014
 //
+// Compiled with
+// - MinGW g++ 4.8.2
+// - Visual Studio Express 2013
+//
 
 #include <iostream>
 #include <cstdlib> // rand()

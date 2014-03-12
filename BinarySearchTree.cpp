@@ -1,17 +1,17 @@
 //
 // Algorithm Practice - Binary Search Tree
 //
-// Author: Mingjie Li (limingjie0719@gmail.com)
-// Date  : Mar 11, 2014
+// Mingjie Li (limingjie0719@gmail.com)
+// Mar 11, 2014
 //
-// Compiled successfully on:
-// 1. MinGW g++ 4.8.1
-// 2. VS Express 2013
+// Compiled with
+// - MinGW g++ 4.8.2
+// - Visual Studio Express 2013
 //
 
 #include <iostream>
-#include <stack> // inOrderTraverseStack
-#include <queue> // breadthTraverseQueue
+#include <stack> // used by inOrderTraverseStack()
+#include <queue> // used by breadthTraverseQueue()
 
 template <typename T>
 class treeNode
@@ -137,15 +137,15 @@ int main()
     treeNode<int> *tree = buildTree();
 
     std::cout << "== Traverse Tree In-order Recusively ==\n";
-    inOrderTraverseRecursive<int>(tree);
+    inOrderTraverseRecursive(tree);
     std::cout << std::endl;
 
     std::cout << "== Traverse Tree In-order by Stack ==\n";
-    inOrderTraverseStack<int>(tree);
+    inOrderTraverseStack(tree);
     std::cout << std::endl;
 
     std::cout << "== Traverse Tree Breadth First ==\n";
-    breadthTraverseQueue<int>(tree);
+    breadthTraverseQueue(tree);
     std::cout << std::endl;
 
     std::cout << "Press any key to exit." << std::endl;
