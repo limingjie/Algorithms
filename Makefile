@@ -13,7 +13,7 @@ CXX       = g++
 CXXFLAGS  = -Wall -O2
 
 # Executables
-EXES      = BinarySearchTree.exe QuickSort.exe
+EXES      = BinarySearchTree.exe QuickSort.exe BlockPuzzle.exe
 
 # Targets
 all: $(EXES)
