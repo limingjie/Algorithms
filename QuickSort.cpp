@@ -1,19 +1,19 @@
 //
 // Algorithm Practice - Quick Sort
 //
-// Author: Mingjie Li (limingjie0719@gmail.com)
-// Date  : Mar 11, 2014
+// Mingjie Li (limingjie0719@gmail.com)
+// Mar 11, 2014
 //
 
 #include <iostream>
 #include <cstdlib> // rand()
 #include <ctime>   // time()
 
-const int arraySize = 30;
+const int ArraySize = 30;
 
-void print(int *arr)
+void print(int *arr, int size = ArraySize)
 {
-    for (int i = 0; i < arraySize; i++)
+    for (int i = 0; i < size; i++)
     {
         std::cout << arr[i] << ' ';
     }
@@ -27,24 +27,45 @@ inline void swap(int &a, int &b)
     b = temp;
 }
 
-// Hoare partition
-int hoare_partition(int *arr, int left, int right, int pivot)
+// Find median of three, and swap it with right most element
+void median_of_three(int *arr, int left, int right)
 {
-    if (pivot != right)
+    // (left + right) / 2 may exceed INT_MAX
+    int mid = left + (right - left) / 2;
+    int l = arr[left], m = arr[mid], r = arr[right];
+
+    if (l < r)
     {
-        swap(arr[pivot], arr[right]);
-        pivot = right;
+        if (m < l)
+            swap(arr[left], arr[right]);
+        else if (m < r)
+            swap(arr[mid], arr[right]);
+        // else use right as median
     }
-    int p = arr[right--];
+    else
+    {
+        if (l < m)
+            swap(arr[left], arr[right]);
+        else if (r < m)
+            swap(arr[mid], arr[right]);
+        // else use right as median
+    }
+}
+
+// Hoare partition
+int hoare_partition(int *arr, int left, int right)
+{
+    int keep = right;
+    int pivot = arr[right--];
 
     std::cout << "left = " << left
         << ", right = " << right
-        << ", pivot = " << arr[pivot] << std::endl;
+        << ", pivot = " << pivot << std::endl;
 
     while (true)
     {
-        while (arr[left] < p) left++;
-        while (right >= left && arr[right] >= p) right--;
+        while (arr[left] < pivot) left++;
+        while (right >= left && arr[right] >= pivot) right--;
     
         if (left < right)
         {
@@ -52,7 +73,7 @@ int hoare_partition(int *arr, int left, int right, int pivot)
         }
         else
         {
-            if (left != pivot) swap(arr[left], arr[pivot]);
+            if (left != keep) swap(arr[left], arr[keep]);
             break;
         }
     }
@@ -61,26 +82,14 @@ int hoare_partition(int *arr, int left, int right, int pivot)
     return left;
 }
 
-
-int partition(int *arr, int left, int right, int pivot)
+int partition(int *arr, int left, int right)
 {
-    if (pivot != right)
-    {
-        swap(arr[pivot], arr[right]);
-        pivot = right;
-    }
-    int p = arr[right--];
+    int p = right;
+    int pivot = arr[right--];
 
     std::cout << "left = " << left
         << ", right = " << right
-        << ", pivot = " << arr[pivot] << std::endl;
-
-    if (pivot != right)
-    {
-        swap(arr[pivot], arr[right]);
-        pivot = right--;
-    }
-    int p = arr[pivot];
+        << ", pivot = " << pivot << std::endl;
 
     // TODO: partition
 
@@ -94,8 +103,8 @@ void quicksort(int *arr, int left, int right)
 
     if (left < right)
     {
-        // TODO: better pivot
-        pivot = hoare_partition(arr, left, right, right);
+        median_of_three(arr, left, right);
+        pivot = hoare_partition(arr, left, right);
         quicksort(arr, left, pivot - 1);
         quicksort(arr, pivot + 1, right);
     }
@@ -103,17 +112,17 @@ void quicksort(int *arr, int left, int right)
 
 int main()
 {
-    int arr[arraySize];
+    int arr[ArraySize];
 
     srand((unsigned int)time(NULL));
-    for (int i = 0; i < arraySize; i++)
+    for (int i = 0; i < ArraySize; i++)
     {
         arr[i] = rand() % 89 + 10;
     }
-    // arr[arraySize - 1] = 100;
+    // arr[ArraySize - 1] = 0;
 
     print(arr);
-    quicksort(arr, 0, arraySize - 1);
+    quicksort(arr, 0, ArraySize - 1);
 
     std::cout << "Press any key to exit." << std::endl;
     std::cin.get();
