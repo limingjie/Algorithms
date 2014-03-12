@@ -27,19 +27,25 @@ inline void swap(int &a, int &b)
     b = temp;
 }
 
-int partition(int *arr, int left, int right, int pivot)
+// Hoare partition
+int hoare_partition(int *arr, int left, int right, int pivot)
 {
+    if (pivot != right)
+    {
+        swap(arr[pivot], arr[right]);
+        pivot = right;
+    }
+    int p = arr[right--];
+
     std::cout << "left = " << left
         << ", right = " << right
         << ", pivot = " << arr[pivot] << std::endl;
-
-    int p = arr[pivot];
 
     while (true)
     {
         while (arr[left] < p) left++;
         while (right >= left && arr[right] >= p) right--;
-
+    
         if (left < right)
         {
             swap(arr[left], arr[right]);
@@ -55,6 +61,33 @@ int partition(int *arr, int left, int right, int pivot)
     return left;
 }
 
+
+int partition(int *arr, int left, int right, int pivot)
+{
+    if (pivot != right)
+    {
+        swap(arr[pivot], arr[right]);
+        pivot = right;
+    }
+    int p = arr[right--];
+
+    std::cout << "left = " << left
+        << ", right = " << right
+        << ", pivot = " << arr[pivot] << std::endl;
+
+    if (pivot != right)
+    {
+        swap(arr[pivot], arr[right]);
+        pivot = right--;
+    }
+    int p = arr[pivot];
+
+    // TODO: partition
+
+    print(arr);
+    return left;
+}
+
 void quicksort(int *arr, int left, int right)
 {
     int pivot;
@@ -62,7 +95,7 @@ void quicksort(int *arr, int left, int right)
     if (left < right)
     {
         // TODO: better pivot
-        pivot = partition(arr, left, right - 1, right);
+        pivot = hoare_partition(arr, left, right, right);
         quicksort(arr, left, pivot - 1);
         quicksort(arr, pivot + 1, right);
     }
@@ -77,7 +110,7 @@ int main()
     {
         arr[i] = rand() % 89 + 10;
     }
-    arr[arraySize - 1] = 100;
+    // arr[arraySize - 1] = 100;
 
     print(arr);
     quicksort(arr, 0, arraySize - 1);
