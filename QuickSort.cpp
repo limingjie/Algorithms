@@ -9,9 +9,10 @@
 #include <cstdlib> // rand()
 #include <ctime>   // time()
 
-const int ArraySize = 30;
+const int ArraySize = 20;
 
-void print(int *arr, int size = ArraySize)
+template <typename T>
+void print(T *arr, int size = ArraySize)
 {
     for (int i = 0; i < size; i++)
     {
@@ -20,19 +21,21 @@ void print(int *arr, int size = ArraySize)
     std::cout << std::endl;
 }
 
-inline void swap(int &a, int &b)
+template <typename T>
+inline void swap(T &a, T &b)
 {
-    int temp = a;
+    T temp = a;
     a = b;
     b = temp;
 }
 
 // Find median of three, and swap it with right most element
-void median_of_three(int *arr, int left, int right)
+template <typename T>
+void median_of_three(T *arr, int left, int right)
 {
     // (left + right) / 2 may exceed INT_MAX
     int mid = left + (right - left) / 2;
-    int l = arr[left], m = arr[mid], r = arr[right];
+    T l = arr[left], m = arr[mid], r = arr[right];
 
     if (l < r)
     {
@@ -53,14 +56,14 @@ void median_of_three(int *arr, int left, int right)
 }
 
 // Hoare partition
-int hoare_partition(int *arr, int left, int right)
+template <typename T>
+int hoare_partition(T *arr, int left, int right)
 {
-    int keep = right;
-    int pivot = arr[right--];
-
     std::cout << "left = " << left
-        << ", right = " << right
-        << ", pivot = " << pivot << std::endl;
+        << ", right = " << right << std::endl;
+
+    int keep = right;
+    T pivot = arr[right--];
 
     while (true)
     {
@@ -82,29 +85,38 @@ int hoare_partition(int *arr, int left, int right)
     return left;
 }
 
-int partition(int *arr, int left, int right)
+template <typename T>
+int partition(T *arr, int left, int right)
 {
-    int p = right;
-    int pivot = arr[right--];
-
     std::cout << "left = " << left
-        << ", right = " << right
-        << ", pivot = " << pivot << std::endl;
+        << ", right = " << right << std::endl;
 
-    // TODO: partition
+    T pivot = arr[right];
+    int i = left - 1;
+
+    for (int j = left; j < right; j++)
+    {
+        if (arr[j] <= pivot)
+        {
+            swap(arr[++i], arr[j]);
+        }
+    }
+    swap(arr[++i], arr[right]);
 
     print(arr);
-    return left;
+    return i;
 }
 
-void quicksort(int *arr, int left, int right)
+template <typename T>
+void quicksort(T *arr, int left, int right)
 {
     int pivot;
 
     if (left < right)
     {
         median_of_three(arr, left, right);
-        pivot = hoare_partition(arr, left, right);
+        // pivot = hoare_partition(arr, left, right);
+        pivot = partition(arr, left, right);
         quicksort(arr, left, pivot - 1);
         quicksort(arr, pivot + 1, right);
     }
@@ -112,14 +124,13 @@ void quicksort(int *arr, int left, int right)
 
 int main()
 {
-    int arr[ArraySize];
+    double arr[ArraySize];
 
     srand((unsigned int)time(NULL));
     for (int i = 0; i < ArraySize; i++)
     {
-        arr[i] = rand() % 89 + 10;
+        arr[i] = rand() % 9000 / 100.0 + 10;
     }
-    // arr[ArraySize - 1] = 0;
 
     print(arr);
     quicksort(arr, 0, ArraySize - 1);
