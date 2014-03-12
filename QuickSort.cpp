@@ -33,10 +33,12 @@ int partition(int *arr, int left, int right, int pivot)
         << ", right = " << right
         << ", pivot = " << arr[pivot] << std::endl;
 
+    int p = arr[pivot];
+
     while (true)
     {
-        while (arr[left] < arr[pivot]) left++;
-        while (arr[right] >= arr[pivot]) right--;
+        while (arr[left] < p) left++;
+        while (right >= left && arr[right] >= p) right--;
 
         if (left < right)
         {
@@ -44,7 +46,7 @@ int partition(int *arr, int left, int right, int pivot)
         }
         else
         {
-            swap(arr[left], arr[pivot]);
+            if (left != pivot) swap(arr[left], arr[pivot]);
             break;
         }
     }
@@ -75,6 +77,7 @@ int main()
     {
         arr[i] = rand() % 89 + 10;
     }
+    arr[arraySize - 1] = 100;
 
     print(arr);
     quicksort(arr, 0, arraySize - 1);
