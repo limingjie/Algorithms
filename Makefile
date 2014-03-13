@@ -13,7 +13,7 @@ CXX       = g++
 CXXFLAGS  = -Wall -O2
 
 # Executables
-EXES      = BinarySearchTree.exe QuickSort.exe BlockPuzzle.exe MyTimerTest.exe
+EXES      = BinarySearchTree.exe QuickSort.exe BlockPuzzle.exe
 
 # Targets
 all: $(EXES)
@@ -23,7 +23,7 @@ all: $(EXES)
 	$(CXX)  $(CXXFLAGS)  -o $@  $<
 	@echo
 
-MyTimerTest.exe: MyTimerTest.cpp MyTimer.hpp
+QuickSort.exe: QuickSort.cpp MyTimer.hpp
 	@echo "==>Compiling" $<
 	$(CXX)  $(CXXFLAGS)  -o $@  $<
 	@echo

@@ -1,8 +1,8 @@
 #include <iostream>
-#include <cstdlib> // rand()
-#include <ctime>   // time()
-#include <ratio>   // std::nano
-#include "MyTimer.hpp"
+#include <chrono>      // high_resolution_clock (seed random number generator)
+#include <random>      // minstd_rand0 & uniform_real_distribution
+#include <ratio>       // std::nano
+#include "MyTimer.hpp" // MyTimer
 
 template <typename T>
 inline void swap(T &a, T &b)
@@ -72,24 +72,38 @@ void quicksort(T *arr, int left, int right)
 
 int main()
 {
-    const int ArraySize = 100000;
-    const int LoopTimes = 1000;
+    const int OutterLoop = 5;
+    const int InnerLoop  = 100;
+    const int ArraySize  = 100000;
     double arr[ArraySize];
 
-    srand((unsigned int)time(NULL));
-
-    std::cout << "QuickSort " << ArraySize << " double numbers for "
-        << LoopTimes << " times" << std::endl;
+    auto seed = std::chrono::high_resolution_clock::now()
+                .time_since_epoch().count();
+    std::minstd_rand0 generator(seed);
+    std::uniform_real_distribution<double> distribution(10.00, 99.99);
     
-    MyTimer<double, std::micro> timer;
-    for (int j = 0; j < LoopTimes; j++)
+    std::cout << "Loop " << OutterLoop << " times." << std::endl;
+    MyTimer<double> timer;
+    for (int k = 0; k < OutterLoop; k++)
     {
-        for (int i = 0; i < ArraySize; i++)
+        std::cout << std::endl << "QuickSort " << ArraySize << " double numbers "
+            << InnerLoop << " times." << std::endl;
+
+        MyTimer<double> timer;
+        
+        std::cout << "Sorting..." << std::endl;
+
+        for (int j = 0; j < InnerLoop; j++)
         {
-            arr[i] = rand() % 9000 / 100.0 + 10;
+            for (int i = 0; i < ArraySize; i++)
+            {
+                arr[i] = distribution(generator);
+            }
+            quicksort(arr, 0, ArraySize - 1);
         }
-        quicksort(arr, 0, ArraySize - 1);
     }
     
+    std::cout << std::endl << "Overall time" << std::endl;
+
     return 0;
 }
