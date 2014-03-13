@@ -7,7 +7,7 @@
 // Compiled with
 // - MinGW g++ 4.8.2
 //
-#include <chrono> // clock & duration
+#include <chrono> // hr_clock & duration
 #include <ratio>  // ratio
 #include <random> // minstd_rand0 & uniform_int_distribution
 #include <string>
@@ -33,7 +33,7 @@
 //
 
 typedef std::chrono::high_resolution_clock hr_clock;
-typedef std::chrono::duration<hr_clock::rep, hr_clock::period> hr_clock_duration;
+typedef std::chrono::duration<hr_clock::rep, hr_clock::period> hr_duration;
 
 template <typename T = int, typename R = std::milli>
 class MyTimer
@@ -42,11 +42,12 @@ public:
     MyTimer(std::string name = "")
     {
         mp_is_paused = false;
-        mp_duration = hr_clock_duration::zero();
+        mp_duration = hr_duration::zero();
         mp_id = getId();
         mp_name = (name.size() == 0) ? "" : ("[" + name + "]");
         
-        std::cout << "Timer [" << "#" << mp_id << "] " << mp_name << " Started..." << std::endl;
+        std::cout << "Timer [" << "#" << mp_id << "] "
+            << mp_name << " Started..." << std::endl;
 
         // Always start timer at the end of constructor
         mp_time_point = hr_clock::now();
@@ -58,12 +59,15 @@ public:
 
         // Always end timer at the beginning of destructor
         mp_duration += hr_clock::now() - mp_time_point;
-        std::cout << "Timer [" << "#" << mp_id << "] " << mp_name << " Stopped. Elapsed: "
+        std::cout << "Timer [" << "#" << mp_id << "] "
+            << mp_name << " Stopped. Elapsed: "
             << duration_cast<duration<T, R>>(mp_duration).count()
             << " x (" << R::num << '/' << R::den << ") seconds ["
             << duration_cast<duration<double>>(mp_duration).count() << "s / "
-            << duration_cast<duration<double, std::milli>>(mp_duration).count() << "ms / "
-            << duration_cast<duration<double, std::nano>>(mp_duration).count() << "ns]"
+            << duration_cast<duration<double, std::milli>>(mp_duration).count()
+            << "ms / "
+            << duration_cast<duration<double, std::nano>>(mp_duration).count()
+            << "ns]"
             << std::endl;
     }
 
@@ -87,7 +91,7 @@ public:
 
 private:
     hr_clock::time_point mp_time_point;
-    hr_clock_duration mp_duration;
+    hr_duration mp_duration;
     bool mp_is_paused;
 
     std::string mp_name;
@@ -117,4 +121,4 @@ template <typename T, typename R>
 std::minstd_rand0 MyTimer<T, R>::generator;
 
 template <typename T, typename R>
-std::uniform_int_distribution<int> MyTimer<T, R>::distribution(1000000, 9999999);
+std::uniform_int_distribution<int> MyTimer<T, R>::distribution(100000, 999999);
