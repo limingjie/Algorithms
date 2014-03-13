@@ -35,20 +35,26 @@ class MyTimer
 public:
     MyTimer()
     {
-        std::cout << "Timer Started..." << std::endl;
+        using namespace std::chrono;
+
+        auto now = high_resolution_clock::now();
+        hash = duration_cast<std::chrono::milliseconds>(
+                   now.time_since_epoch()).count() % 100000000ULL;
+                   
+        std::cout << "Timer[#" << hash << "] Started..." << std::endl;
         
         // Always start timer at the end of constructor
-        tp_start = std::chrono::high_resolution_clock::now();
+        tp_start = high_resolution_clock::now();
     }
     
-    ~MyTimer()
+    virtual ~MyTimer()
     {
         using namespace std::chrono;
         
         // Always end timer at the beginning of destructor
-        tp_end = std::chrono::high_resolution_clock::now();
+        tp_end = high_resolution_clock::now();
         auto t = tp_end - tp_start;
-        std::cout << "Timer End. Elapsed: "
+        std::cout << "Timer[#" << hash << "] End. Elapsed: "
             << duration_cast<duration<T, R>>(t).count()
             << " x (" << R::num << '/' << R::den << ") seconds ["
             << duration_cast<duration<double>>(t).count() << "s / "
@@ -60,4 +66,5 @@ public:
 private:
     std::chrono::system_clock::time_point tp_start;
     std::chrono::system_clock::time_point tp_end;
+    unsigned int hash;
 };
