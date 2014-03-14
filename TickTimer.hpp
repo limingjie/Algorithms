@@ -101,15 +101,15 @@ private:
         if (isEnd)
         {
             unsigned long long min, sec, msec, usec;
-            
+
             usec = duration_cast<std::chrono::microseconds>(m_duration).count();
             min  =  usec / 60000000ULL;
             sec  = (usec /  1000000ULL) %   60ULL;
             msec = (usec /     1000ULL) % 1000ULL;
-            
-            // round reminder usec up to msec
+
+            // round usec remainder up to msec
             if ((usec % 1000ULL) >= 500ULL) ++msec;
-            
+
             T ticks = duration_cast<duration<T, R>>(m_duration).count();
 
             cerr << " Elapsed "
