@@ -78,6 +78,7 @@ int main()
 
     srand((unsigned int)time(NULL));
 
+    MyTimer<double, std::micro> timer;
     std::cout << "QuickSort " << ArraySize << " double numbers for "
         << LoopTimes << " times" << std::endl;
     
