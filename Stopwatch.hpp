@@ -18,7 +18,7 @@
 //
 // Stopwatch - Measure execution time of function or any piece of code.
 //
-// Prerequisite - c++11 libraries <chrono>
+// Prerequisite - c++11 library <chrono>
 //
 // - Use variable scope
 //   {
@@ -36,7 +36,7 @@
 //       time->pause();
 //       [Console Output]
 //   }
-//   delete time; // Stopwatch stops by explicitly invoking destructor.
+//   delete time; // Stopwatch stops by explicitly calling destructor.
 //
 template <typename T = int, typename R = std::milli>
 class Stopwatch
