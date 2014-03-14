@@ -10,9 +10,9 @@
 //
 
 #include <iostream>
-#include <chrono>      // high_resolution_clock (seed random number generator)
-#include <random>      // minstd_rand0 & uniform_real_distribution
-#include "MyTimer.hpp" // MyTimer
+#include <chrono> // high_resolution_clock (seed random number generator)
+#include <random> // minstd_rand0 & uniform_real_distribution
+#include "TickTimer.hpp" // TickTimer
 
 template <typename T>
 void print(T *arr, int size)
@@ -110,7 +110,7 @@ void quicksort(T *arr, int left, int right)
     if (left < right)
     {
         median_of_three(arr, left, right);
-        // pivot = hoare_partition(arr, left, right); // 15% slower
+        // pivot = hoare_partition(arr, left, right); // about 10%~15% slower, why?
         pivot = partition(arr, left, right);
         quicksort(arr, left, pivot - 1);
         quicksort(arr, pivot + 1, right);
@@ -120,7 +120,7 @@ void quicksort(T *arr, int left, int right)
 int main()
 {
     const int OutterLoop = 5;
-    const int InnerLoop  = 100;
+    const int InnerLoop  = 1000;
     const int ArraySize  = 100000;
     double arr[ArraySize];
 
@@ -130,35 +130,32 @@ int main()
     std::uniform_real_distribution<double> distribution(10.00, 99.99);
     
     std::cout << "Loop " << OutterLoop << " times." << std::endl;
-    MyTimer<double> timer;
     for (int k = 0; k < OutterLoop; k++)
     {
         std::cout << std::endl << "QuickSort " << ArraySize << " double numbers "
             << InnerLoop << " times." << std::endl;
 
-        MyTimer<double> timer_all("Overall");
-        MyTimer<double> timer_sort("QuickSort");
-        timer_sort.pause();
-        MyTimer<double> timer_array("Generate Array");
-        timer_array.pause();
+        TickTimer<double> timer("Total");
+        TickTimer<double> timer_sort("QuickSort");
+        TickTimer<double> timer_array("Generate Array");
 
         std::cout << "Sorting..." << std::endl;
+        timer.start();
 
         for (int j = 0; j < InnerLoop; j++)
         {
-            timer_array.resume();
+            timer_array.start();
             for (int i = 0; i < ArraySize; i++)
             {
                 arr[i] = distribution(generator);
             }
             timer_array.pause();
-            timer_sort.resume();
+            timer_sort.start();
             quicksort(arr, 0, ArraySize - 1);
             timer_sort.pause();
         }
+        timer.pause();
     }
     
-    std::cout << std::endl << "Overall time" << std::endl;
-
     return 0;
 }

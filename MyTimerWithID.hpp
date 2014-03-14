@@ -39,15 +39,16 @@ template <typename T = int, typename R = std::milli>
 class MyTimer
 {
 public:
-    MyTimer(std::string name = "")
+    MyTimer(std::string name = "", bool start = true)
     {
-        mp_is_paused = false;
+        mp_is_paused = !start;
         mp_duration = hr_duration::zero();
         mp_id = getId();
         mp_name = (name.size() == 0) ? "" : ("[" + name + "]");
         
-        std::cout << "Timer [" << "#" << mp_id << "] "
-            << mp_name << " Started..." << std::endl;
+        std::cerr << "Timer [" << "#" << mp_id << "] "
+            << mp_name << " Started" << (mp_is_paused ? " paused" : "...")
+            << std::endl;
 
         // Always start timer at the end of constructor
         mp_time_point = hr_clock::now();
@@ -57,9 +58,10 @@ public:
     {
         using namespace std::chrono;
 
-        // Always end timer at the beginning of destructor
-        mp_duration += hr_clock::now() - mp_time_point;
-        std::cout << "Timer [" << "#" << mp_id << "] "
+        // Always stop timer at the beginning of destructor
+        pause();
+        
+        std::cerr << "Timer [" << "#" << mp_id << "] "
             << mp_name << " Stopped. Elapsed: "
             << duration_cast<duration<T, R>>(mp_duration).count()
             << " x (" << R::num << '/' << R::den << ") seconds ["
@@ -77,6 +79,8 @@ public:
         {
             mp_duration += hr_clock::now() - mp_time_point;
             mp_is_paused = true;
+            // std::cerr << "Timer [" << "#" << mp_id << "] "
+            //     << mp_name << " paused" << std::endl;
         }
     }
 
@@ -84,6 +88,8 @@ public:
     {
         if (mp_is_paused)
         {
+            // std::cerr << "Timer [" << "#" << mp_id << "] "
+            //     << mp_name << " resumed" << std::endl;
             mp_is_paused = false;
             mp_time_point = hr_clock::now();
         }
