@@ -7,14 +7,16 @@
 // Compiled with
 // - MinGW g++ 4.8.2
 //
-#include <chrono> // clock & duration
+#include <chrono> // hr_clock & duration
 #include <ratio>  // ratio
+#include <random> // minstd_rand0 & uniform_int_distribution
+#include <string>
 #include <iostream>
 
 //
-// This class is to measure execution time of function or any piece of code.
+// MyTimer - Measure execution time of function or any piece of code.
 //
-// Prerequisite - c++11 is required for <chrono> library
+// Prerequisite - c++11 libraries <chrono> & <random>
 //
 // Usage -
 //
@@ -29,35 +31,94 @@
 //    [Some Code]
 //    delete timer; // Timer stops by explicitly invoking destructor.
 //
-template <typename T = double, typename R = std::milli>
+
+typedef std::chrono::high_resolution_clock hr_clock;
+typedef std::chrono::duration<hr_clock::rep, hr_clock::period> hr_duration;
+
+template <typename T = int, typename R = std::milli>
 class MyTimer
 {
 public:
-    MyTimer()
+    MyTimer(std::string name = "")
     {
-        std::cout << "Timer Started..." << std::endl;
+        mp_is_paused = false;
+        mp_duration = hr_duration::zero();
+        mp_id = getId();
+        mp_name = (name.size() == 0) ? "" : ("[" + name + "]");
         
+        std::cout << "Timer [" << "#" << mp_id << "] "
+            << mp_name << " Started..." << std::endl;
+
         // Always start timer at the end of constructor
-        tp_start = std::chrono::high_resolution_clock::now();
+        mp_time_point = hr_clock::now();
     }
-    
-    ~MyTimer()
+
+    virtual ~MyTimer()
     {
         using namespace std::chrono;
-        
+
         // Always end timer at the beginning of destructor
-        tp_end = std::chrono::high_resolution_clock::now();
-        auto t = tp_end - tp_start;
-        std::cout << "Timer End. Elapsed: "
-            << duration_cast<duration<T, R>>(t).count()
+        mp_duration += hr_clock::now() - mp_time_point;
+        std::cout << "Timer [" << "#" << mp_id << "] "
+            << mp_name << " Stopped. Elapsed: "
+            << duration_cast<duration<T, R>>(mp_duration).count()
             << " x (" << R::num << '/' << R::den << ") seconds ["
-            << duration_cast<duration<double>>(t).count() << "s / "
-            << duration_cast<duration<double, std::milli>>(t).count() << "ms / "
-            << duration_cast<duration<double, std::nano>>(t).count() << "ns]"
+            << duration_cast<duration<double>>(mp_duration).count() << "s / "
+            << duration_cast<duration<double, std::milli>>(mp_duration).count()
+            << "ms / "
+            << duration_cast<duration<double, std::nano>>(mp_duration).count()
+            << "ns]"
             << std::endl;
     }
-    
+
+    void pause()
+    {
+        if (!mp_is_paused)
+        {
+            mp_duration += hr_clock::now() - mp_time_point;
+            mp_is_paused = true;
+        }
+    }
+
+    void resume()
+    {
+        if (mp_is_paused)
+        {
+            mp_is_paused = false;
+            mp_time_point = hr_clock::now();
+        }
+    }
+
 private:
-    std::chrono::system_clock::time_point tp_start;
-    std::chrono::system_clock::time_point tp_end;
+    hr_clock::time_point mp_time_point;
+    hr_duration mp_duration;
+    bool mp_is_paused;
+
+    std::string mp_name;
+    unsigned int mp_id;
+
+    static bool is_seeded;
+    static std::minstd_rand0 generator;
+    static std::uniform_int_distribution<int> distribution;
+
+    unsigned int getId()
+    {
+        if (!is_seeded)
+        {
+            generator.seed(std::chrono::high_resolution_clock::now()
+                           .time_since_epoch().count());
+            is_seeded = true;
+        }
+
+        return distribution(generator);
+    }
 };
+
+template <typename T, typename R>
+bool MyTimer<T, R>::is_seeded = false;
+
+template <typename T, typename R>
+std::minstd_rand0 MyTimer<T, R>::generator;
+
+template <typename T, typename R>
+std::uniform_int_distribution<int> MyTimer<T, R>::distribution(100000, 999999);

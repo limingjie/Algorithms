@@ -10,13 +10,12 @@
 //
 
 #include <iostream>
-#include <cstdlib> // rand()
-#include <ctime>   // time()
-
-const int ArraySize = 20;
+#include <chrono>      // high_resolution_clock (seed random number generator)
+#include <random>      // minstd_rand0 & uniform_real_distribution
+#include "MyTimer.hpp" // MyTimer
 
 template <typename T>
-void print(T *arr, int size = ArraySize)
+void print(T *arr, int size)
 {
     for (int i = 0; i < size; i++)
     {
@@ -63,9 +62,6 @@ void median_of_three(T *arr, int left, int right)
 template <typename T>
 int hoare_partition(T *arr, int left, int right)
 {
-    std::cout << "left = " << left
-        << ", right = " << right << std::endl;
-
     int keep = right;
     T pivot = arr[right--];
 
@@ -85,16 +81,12 @@ int hoare_partition(T *arr, int left, int right)
         }
     }
 
-    print(arr);
     return left;
 }
 
 template <typename T>
 int partition(T *arr, int left, int right)
 {
-    std::cout << "left = " << left
-        << ", right = " << right << std::endl;
-
     T pivot = arr[right];
     int i = left - 1;
 
@@ -107,7 +99,6 @@ int partition(T *arr, int left, int right)
     }
     swap(arr[++i], arr[right]);
 
-    print(arr);
     return i;
 }
 
@@ -119,7 +110,7 @@ void quicksort(T *arr, int left, int right)
     if (left < right)
     {
         median_of_three(arr, left, right);
-        // pivot = hoare_partition(arr, left, right);
+        // pivot = hoare_partition(arr, left, right); // 15% slower
         pivot = partition(arr, left, right);
         quicksort(arr, left, pivot - 1);
         quicksort(arr, pivot + 1, right);
@@ -128,19 +119,46 @@ void quicksort(T *arr, int left, int right)
 
 int main()
 {
+    const int OutterLoop = 5;
+    const int InnerLoop  = 100;
+    const int ArraySize  = 100000;
     double arr[ArraySize];
 
-    srand((unsigned int)time(NULL));
-    for (int i = 0; i < ArraySize; i++)
+    auto seed = std::chrono::high_resolution_clock::now()
+                .time_since_epoch().count();
+    std::minstd_rand0 generator(seed);
+    std::uniform_real_distribution<double> distribution(10.00, 99.99);
+    
+    std::cout << "Loop " << OutterLoop << " times." << std::endl;
+    MyTimer<double> timer;
+    for (int k = 0; k < OutterLoop; k++)
     {
-        arr[i] = rand() % 9000 / 100.0 + 10;
+        std::cout << std::endl << "QuickSort " << ArraySize << " double numbers "
+            << InnerLoop << " times." << std::endl;
+
+        MyTimer<double> timer_all("Overall");
+        MyTimer<double> timer_sort("QuickSort");
+        timer_sort.pause();
+        MyTimer<double> timer_array("Generate Array");
+        timer_array.pause();
+
+        std::cout << "Sorting..." << std::endl;
+
+        for (int j = 0; j < InnerLoop; j++)
+        {
+            timer_array.resume();
+            for (int i = 0; i < ArraySize; i++)
+            {
+                arr[i] = distribution(generator);
+            }
+            timer_array.pause();
+            timer_sort.resume();
+            quicksort(arr, 0, ArraySize - 1);
+            timer_sort.pause();
+        }
     }
-
-    print(arr);
-    quicksort(arr, 0, ArraySize - 1);
-
-    std::cout << "Press any key to exit." << std::endl;
-    std::cin.get();
+    
+    std::cout << std::endl << "Overall time" << std::endl;
 
     return 0;
 }
