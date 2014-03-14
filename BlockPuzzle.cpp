@@ -15,7 +15,6 @@
 #include <algorithm> // sort
 #include <vector>
 #include <string>
-#include "TickTimer.hpp" // TickTimer
 
 using namespace std;
 
@@ -113,7 +112,7 @@ Block& Block::operator()(size_t x, size_t y)
 Block& Block::operator()(string cells, size_t y)
 {
     size_t x = 0;
-    
+
     for (auto i = cells.cbegin(); i != cells.cend(); i++)
     {
         if ((*i) == '*')
@@ -124,7 +123,7 @@ Block& Block::operator()(string cells, size_t y)
         {
             x = 0;
             y++;
-            
+
             continue;
         }
 
@@ -209,7 +208,7 @@ bool Board::SetBlock(Block *b, size_t x, size_t y)
 bool Board::CheckBlock(Block *b, size_t x, size_t y)
 {
     count_checkblock++;
-    
+
     if (b->width + x > width || b->height + y > height)
         return false;
 
@@ -238,13 +237,11 @@ void Board::ClearBlock(Block *b, size_t x, size_t y)
 // This is the core solution
 bool Board::RecursiveSetBlock(Blocks &bs, size_t block_index)
 {
-    static TickTimer<double, std::nano> timer("Timer", true);
-
     Block* block = bs[block_index];
-    
+
     size_t xmax = width - block->width;
     size_t ymax = height - block->height;
-    
+
     for (size_t x = 0; x <= xmax; x++)
     {
         for (size_t y = 0; y <= ymax; y++)
@@ -255,7 +252,6 @@ bool Board::RecursiveSetBlock(Blocks &bs, size_t block_index)
                 // If the block is the last one, solution found.
                 if (block_index == bs.size() - 1)
                 {
-                    timer.pause();
                     cout << "Step: Put block " << block_index << " at [" << x << ", " << y << "]" << endl;
                     block->Print(width, height, x, y, "Block " + to_string(block_index));
                     return true;
@@ -302,11 +298,8 @@ bool Board::Unblock(Blocks bs)
         (*i)->Print("Block " + to_string(i - bs.cbegin()));
     }
 
-    TickTimer<> timer("Total Time");
     // Find solution
-    timer.start();
     bool result = RecursiveSetBlock(bs, 0);
-    timer.stop();
 
     cout << "count_setblock   = " << count_setblock << endl
          << "count_checkblock = " << count_checkblock << endl

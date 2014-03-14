@@ -1,6 +1,9 @@
 Algorithm Practice
 ==================
+Mingjie Li (limingjie0719@gmail.com)
 
+Algorithms
+==========
 Binary Search Tree
 - Traverse
   - InOrder recursion
@@ -12,3 +15,9 @@ Quick Sort
 - Hoare partition
 
 Block Puzzle
+- To solve the game
+
+Utilities
+=========
+Stopwatch
+- Tracking accurate execution time

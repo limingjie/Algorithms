@@ -23,12 +23,7 @@ all: $(EXES)
 	$(CXX)  $(CXXFLAGS)  -o $@  $<
 	@echo
 
-QuickSort.exe: QuickSort.cpp TickTimer.hpp
-	@echo "==>Compiling" $<
-	$(CXX)  $(CXXFLAGS)  -o $@  $<
-	@echo
-
-BlockPuzzle.exe: BlockPuzzle.cpp TickTimer.hpp
+QuickSort.exe: QuickSort.cpp Stopwatch.hpp
 	@echo "==>Compiling" $<
 	$(CXX)  $(CXXFLAGS)  -o $@  $<
 	@echo

@@ -12,7 +12,7 @@
 #include <iostream>
 #include <chrono> // high_resolution_clock (seed random number generator)
 #include <random> // minstd_rand0 & uniform_real_distribution
-#include "TickTimer.hpp" // TickTimer
+#include "Stopwatch.hpp" // Stopwatch
 
 template <typename T>
 void print(T *arr, int size)
@@ -69,7 +69,7 @@ int hoare_partition(T *arr, int left, int right)
     {
         while (arr[left] < pivot) left++;
         while (right >= left && arr[right] >= pivot) right--;
-    
+
         if (left < right)
         {
             swap(arr[left], arr[right]);
@@ -128,34 +128,34 @@ int main()
                 .time_since_epoch().count();
     std::minstd_rand0 generator(seed);
     std::uniform_real_distribution<double> distribution(10.00, 99.99);
-    
+
     std::cout << "Loop " << OutterLoop << " times." << std::endl;
     for (int k = 0; k < OutterLoop; k++)
     {
         std::cout << std::endl << "QuickSort " << ArraySize << " double numbers "
             << InnerLoop << " times." << std::endl;
 
-        TickTimer<double> timer("Total");
-        TickTimer<double> timer_sort("QuickSort");
-        TickTimer<double> timer_array("Generate Array");
+        Stopwatch<double> time("Total");
+        Stopwatch<double> time_sort("QuickSort");
+        Stopwatch<double> time_array("Generate Array");
 
         std::cout << "Sorting..." << std::endl;
-        timer.start();
+        time.start();
 
         for (int j = 0; j < InnerLoop; j++)
         {
-            timer_array.start();
+            time_array.start();
             for (int i = 0; i < ArraySize; i++)
             {
                 arr[i] = distribution(generator);
             }
-            timer_array.pause();
-            timer_sort.start();
+            time_array.pause();
+            time_sort.start();
             quicksort(arr, 0, ArraySize - 1);
-            timer_sort.pause();
+            time_sort.pause();
         }
-        timer.pause();
+        time.pause();
     }
-    
+
     return 0;
 }
