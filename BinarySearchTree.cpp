@@ -131,7 +131,7 @@ treeNode<int> *buildTree()
         << "      64\n    /    \\\n  32      96\n /  \\    /\n16  48  80\n"
         << "   /  \\   \\\n  40  56  88\n /          \\\n36          92"
         << std::endl;
-    
+
     return a;
 }
 
@@ -152,7 +152,7 @@ public:
         std::vector<int> result;
         std::stack<TreeNode *> stack;
         TreeNode * current;
-        
+
         if (root)
         {
             stack.push(root);
@@ -161,12 +161,12 @@ public:
                 current = stack.top();
                 stack.pop();
                 result.push_back(current->key);
-                
+
                 if (current->right != NULL) stack.push(current->right);
                 if (current->left != NULL) stack.push(current->left);
             }
         }
-        
+
         return result;
     }
 };
@@ -186,7 +186,7 @@ int main()
     std::cout << "== Traverse Tree Breadth First ==\n";
     breadthTraverseQueue(tree);
     std::cout << std::endl;
-    
+
     std::cout << "== Traverse Tree Preorder ==\n";
     Solution s;
     vector<int> result = s.preorderTraversal(tree);
