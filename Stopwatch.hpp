@@ -9,24 +9,25 @@
 // - Visual Studio Express 2013
 //
 
-#include <chrono> // clock, duration, time_point
-#include <ratio> // ratio
-#include <string> // string
+#include <chrono>   // clock, duration, time_point
+#include <ratio>    // ratio
+#include <string>   // string
 #include <iostream> // cerr
-#include <iomanip> // fmt
+#include <iomanip>  // fmt
 
 //
 // Stopwatch - Measure execution time of function or any piece of code.
 //
 // Prerequisite - c++11 library <chrono>
 //
-// - Use variable scope
+// - Measure function execution time
+//   void function()
 //   {
 //       Stopwatch<double> time("name", true); // Stopwatch starts
 //       [Some Code]
 //   } // Stopwatch stops since out of scope.
 //
-// - Use new / delete
+// - Measure execution time of certain code
 //   // Stopwatch declared and paused
 //   Stopwatch<> *time = new Stopwatch<>("name");
 //   while (true)
@@ -96,22 +97,27 @@ private:
 
         ios::fmtflags fmt(cerr.flags()); // keep cerr format
 
+        // Print Stopwatch name, e.g.
+        // Stopwatch [name            ]
         cerr << "Stopwatch [" << left << setw(16) << m_name << right << "]";
 
         if (isEnd)
         {
             unsigned long long min, sec, msec, usec;
 
+            // Default duration, 0m00.000s
             usec = duration_cast<std::chrono::microseconds>(m_duration).count();
             min  =  usec / 60000000ULL;
             sec  = (usec /  1000000ULL) %   60ULL;
             msec = (usec /     1000ULL) % 1000ULL;
             usec =  usec                % 1000ULL;
-
             if (usec >= 500ULL) ++msec;
 
+            // Duration specified by template.
             T ticks = duration_cast<duration<T, R>>(m_duration).count();
 
+            // Print execution time, e.g.
+            // elapsed   0m11.621s /    11620.665 ticks of 1/1000s
             cerr << " elapsed "
                 << setw(3) << min << "m"
                 << setfill('0')
