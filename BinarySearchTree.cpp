@@ -12,6 +12,9 @@
 #include <iostream>
 #include <stack> // used by inOrderTraverseStack()
 #include <queue> // used by breadthTraverseQueue()
+#include <vector>
+
+using namespace std;
 
 template <typename T>
 class treeNode
@@ -128,24 +131,68 @@ treeNode<int> *buildTree()
         << "      64\n    /    \\\n  32      96\n /  \\    /\n16  48  80\n"
         << "   /  \\   \\\n  40  56  88\n /          \\\n36          92"
         << std::endl;
-    
+
     return a;
 }
+
+typedef treeNode<int> TreeNode;
+
+/** LeetCode OJ binary-tree-preorder-traversal
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode *root) {
+        std::vector<int> result;
+        std::stack<TreeNode *> stack;
+        TreeNode * current;
+
+        if (root)
+        {
+            stack.push(root);
+            while (!stack.empty())
+            {
+                current = stack.top();
+                stack.pop();
+                result.push_back(current->key);
+
+                if (current->right != NULL) stack.push(current->right);
+                if (current->left != NULL) stack.push(current->left);
+            }
+        }
+
+        return result;
+    }
+};
 
 int main()
 {
     treeNode<int> *tree = buildTree();
 
-    std::cout << "== Traverse Tree In-order Recusively ==\n";
+    std::cout << "== Traverse Tree Inorder Recusively ==\n";
     inOrderTraverseRecursive(tree);
     std::cout << std::endl;
 
-    std::cout << "== Traverse Tree In-order by Stack ==\n";
+    std::cout << "== Traverse Tree Inorder by Stack ==\n";
     inOrderTraverseStack(tree);
     std::cout << std::endl;
 
     std::cout << "== Traverse Tree Breadth First ==\n";
     breadthTraverseQueue(tree);
+    std::cout << std::endl;
+
+
+    std::cout << "== Traverse Tree Preorder ==\n";
+    Solution s;
+    vector<int> result = s.preorderTraversal(tree);
+    for (auto it = result.begin(); it != result.end(); ++it)
+        std::cout << *it << ' ';
     std::cout << std::endl;
 
     std::cout << "Press any key to exit." << std::endl;
