@@ -50,21 +50,75 @@ public:
 
         s = dest;
     }
+    
+    bool isPalindrome(string s) {
+        string temp;
+        size_t size = s.size();
+        
+        // remove chars other than alpha number
+        for(size_t i = 0; i < size; ++i)
+        {
+            if (isalnum(s[i])) temp.push_back(toupper(s[i]));
+        }
+        
+        cout << " ==> " << temp << ' ';
+        
+        // check palindrome
+        size = temp.size();
+        
+        for(size_t i = 0; i < size / 2; ++i)
+        {
+            if (temp[i] != temp[size - 1 - i]) return false;
+        }
+        
+        return true;
+    }
 };
 
-void helper(string str)
+void reverseWordsTestHelper(string str)
 {
     Solution s;
-    cout << str << endl;
+    cout << "Input : \"" << str << '"' << endl;
     s.reverseWords(str);
-    cout << str << endl;
+    cout << "Output: \"" << str << '"' << endl;
+}
+
+void reverseWordsTest()
+{
+    cout << "==Test reverseWords()==" << endl;
+    reverseWordsTestHelper("Hello World");
+    reverseWordsTestHelper("  Hello World");
+    reverseWordsTestHelper("Hello World  ");
+    reverseWordsTestHelper("Hello   World");
+    reverseWordsTestHelper("   Hello    World   Hello    World   Hello    World   Hello    World   Hello    World   Hello    World   ");
+    cout << endl;
+}
+
+void palindromeTestHelper(string str)
+{
+    Solution s;
+    cout << '"' << str << '"';
+    if (s.isPalindrome(str))
+        cout << "is Palindrome";
+    else
+        cout << "is no Palindrome";
+    cout << endl;
+}
+
+void palindromeTest()
+{
+    cout << "==Test palindrome()==" << endl;
+    palindromeTestHelper("");
+    palindromeTestHelper("aA");
+    palindromeTestHelper("A man, a plan, a canal: Panama");
+    palindromeTestHelper("Hello World!");
+    cout << endl;
+
 }
 
 int main()
 {
-    helper("Hello World");
-    helper("  Hello World");
-    helper("Hello World  ");
-    helper("Hello   World");
-    helper("   Hello    World   Hello    World   Hello    World   Hello    World   Hello    World   Hello    World   ");
+    reverseWordsTest();
+    palindromeTest();
+    return 0;
 }
