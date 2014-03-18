@@ -10,7 +10,8 @@ public:
     //
     // LeetCode OJ - Reverse words of string
     //
-    void reverseWords(string &s) {
+    void reverseWords(string &s)
+    {
         string dest;
 
         size_t word_end = 0;
@@ -76,7 +77,8 @@ public:
     //
     // LeetCode OJ - Valid Palindrome
     //
-    bool isPalindrome(string s) {
+    bool isPalindrome(string s)
+    {
         string temp;
         size_t size = s.size();
 
@@ -134,13 +136,16 @@ public:
         return v;
     }
 
-    string multiply(string num1, string num2) {
+    string multiply(string num1, string num2)
+    {
+        size_t size_a = num1.size();
+        size_t size_b = num2.size();
+        size_t size_m = size_a + size_b;
+
         vector<int> a = stringToVector(num1);
         vector<int> b = stringToVector(num2);
-        size_t size_a = a.size();
-        size_t size_b = b.size();
-        size_t size_m = size_a + size_b;
         vector<int> m(size_m, 0);
+
         int v;
 
         // Multiply
