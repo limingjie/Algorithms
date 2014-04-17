@@ -105,13 +105,16 @@ private:
         {
             unsigned long long min, sec, msec, usec;
 
-            // Default duration, 0m00.000s
+            // Default duration
             usec = duration_cast<std::chrono::microseconds>(m_duration).count();
+
+            // Roundup usec to msec
+            usec += 500ULL;
+
+            // 0m00.000s
             min  =  usec / 60000000ULL;
             sec  = (usec /  1000000ULL) %   60ULL;
             msec = (usec /     1000ULL) % 1000ULL;
-            usec =  usec                % 1000ULL;
-            if (usec >= 500ULL) ++msec;
 
             // Duration specified by template.
             T ticks = duration_cast<duration<T, R>>(m_duration).count();
