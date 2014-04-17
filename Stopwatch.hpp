@@ -37,7 +37,7 @@
 //       time->pause();
 //       [Console Output]
 //   }
-//   delete time; // Stopwatch stops by explicitly invoking destructor.
+//   delete time; // Stopwatch stops by explicitly calling destructor.
 //
 template <typename T = int, typename R = std::milli>
 class Stopwatch
