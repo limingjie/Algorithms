@@ -10,7 +10,7 @@ CC        = gcc
 CXX       = g++
 
 # Flags
-CXXFLAGS  = -Wall -O2
+CXXFLAGS  = -Wall -O2 -std=c++11
 
 # Executables
 EXES      = BinarySearchTree.exe QuickSort.exe BlockPuzzle.exe StringProblems.exe
