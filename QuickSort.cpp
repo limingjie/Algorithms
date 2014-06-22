@@ -10,7 +10,6 @@
 //
 
 #include <iostream>
-#include <chrono> // high_resolution_clock (seed random number generator)
 #include <random> // minstd_rand0 & uniform_real_distribution
 #include "Stopwatch.hpp" // Stopwatch
 
