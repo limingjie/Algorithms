@@ -14,15 +14,20 @@ Quick Sort
 - Median of three
 - Hoare partition
 
-Block Puzzle
-- To solve the game
-
 LeetCode
 ========
+Binary Search Tree
+  - LeetCode OJ - Binary tree preorder traversal (without recursion)
+
 String Problems
-- Reverse words
-- Valid Palindrome
-- String multiply
+- LeetCode OJ - Reverse words of string
+- LeetCode OJ - Valid Palindrome
+- LeetCode OJ - String multiplication
+
+Game
+====
+Block Puzzle
+- Find solution by greedy algorithm
 
 Utilities
 =========

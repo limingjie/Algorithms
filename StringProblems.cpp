@@ -7,7 +7,11 @@ using namespace std;
 
 class Solution {
 public:
-    void reverseWords(string &s) {
+    //
+    // LeetCode OJ - Reverse words of string
+    //
+    void reverseWords(string &s)
+    {
         string dest;
 
         size_t word_end = 0;
@@ -52,7 +56,29 @@ public:
         s = dest;
     }
 
-    bool isPalindrome(string s) {
+    void reverseWordsTestHelper(string str)
+    {
+        cout << "Input : \"" << str << '"' << endl;
+        reverseWords(str);
+        cout << "Output: \"" << str << '"' << endl;
+    }
+
+    void reverseWordsTest()
+    {
+        cout << "==Test reverseWords()==" << endl;
+        reverseWordsTestHelper("Hello World");
+        reverseWordsTestHelper("  Hello World");
+        reverseWordsTestHelper("Hello World  ");
+        reverseWordsTestHelper("Hello   World");
+        reverseWordsTestHelper("   Hello    World   Hello    World   Hello    World   Hello    World   Hello    World   Hello    World   ");
+        cout << endl;
+    }
+
+    //
+    // LeetCode OJ - Valid Palindrome
+    //
+    bool isPalindrome(string s)
+    {
         string temp;
         size_t size = s.size();
 
@@ -75,29 +101,54 @@ public:
         return true;
     }
 
+    void palindromeTestHelper(string str)
+    {
+        Solution s;
+        cout << '"' << str << '"';
+        if (s.isPalindrome(str))
+            cout << "is Palindrome";
+        else
+            cout << "is no Palindrome";
+        cout << endl;
+    }
+
+    void palindromeTest()
+    {
+        cout << "==Test palindrome()==" << endl;
+        palindromeTestHelper("");
+        palindromeTestHelper("aA");
+        palindromeTestHelper("A man, a plan, a canal: Panama");
+        palindromeTestHelper("Hello World!");
+        cout << endl;
+    }
+
+    //
+    // LeetCode OJ - String multiplication
+    //
     vector<int> stringToVector(string s)
     {
         vector<int> v;
         size_t size = s.size();
+        v.reserve(size);
         for (size_t i = 0; i < size; ++i)
             v.push_back(s[size - i - 1] - '0');
 
         return v;
     }
 
-    string multiply(string num1, string num2) {
-        vector<int> a = stringToVector(num1);
-        vector<int> b = stringToVector(num2);
-        vector<int> m;
-
-        size_t size_a = a.size();
-        size_t size_b = b.size();
+    string multiply(string num1, string num2)
+    {
+        size_t size_a = num1.size();
+        size_t size_b = num2.size();
         size_t size_m = size_a + size_b;
 
-        m.reserve(size_m);
-        for (size_t i = 0; i < size_m; ++i)
-            m[i] = 0;
+        vector<int> a = stringToVector(num1);
+        vector<int> b = stringToVector(num2);
+        vector<int> m(size_m, 0);
 
+        int v;
+
+        // Multiply
         for (size_t j = 0; j < size_b; ++j)
         {
             for (size_t i = 0; i < size_a; ++i)
@@ -106,7 +157,7 @@ public:
             }
         }
 
-        int v;
+        // Process carry
         for (size_t i = 0; i < size_m; ++i)
         {
             v = m[i] / 10;
@@ -114,84 +165,48 @@ public:
             if (v > 0) m[i + 1] += v;
         }
 
+        // Check prefix zeros
         while (size_m > 1 && m[size_m - 1] == 0)
             --size_m;
 
+        // Output string
         string s;
         for (size_t i = 0; i < size_m; ++i)
             s.push_back(m[size_m - i - 1] + '0');
 
         return s;
     }
+
+    void multiplyTestHelper(string a, string b)
+    {
+        cout << '"' << a << "\" x \"" << b << "\" = \"" << multiply(a, b) << '"' << endl;
+    }
+
+    void multiplyTest()
+    {
+        cout << "==Test multiply()==" << endl;
+        multiplyTestHelper("0", "0");
+        multiplyTestHelper("999", "0");
+        multiplyTestHelper("999", "999");
+        multiplyTestHelper("1", "999");
+        multiplyTestHelper("100", "100");
+        multiplyTestHelper("999", "100");
+        multiplyTestHelper("9999999999999999999", "999999999999999999999999999999");
+        multiplyTestHelper("12345678901234567890123456789012345678901234567890", "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
+        multiplyTestHelper("1234567890", "1234567890");
+        multiplyTestHelper("000", "0000000");
+        multiplyTestHelper("00099", "000001");
+        cout << endl;
+    }
 };
-
-void reverseWordsTestHelper(string str)
-{
-    Solution s;
-    cout << "Input : \"" << str << '"' << endl;
-    s.reverseWords(str);
-    cout << "Output: \"" << str << '"' << endl;
-}
-
-void reverseWordsTest()
-{
-    cout << "==Test reverseWords()==" << endl;
-    reverseWordsTestHelper("Hello World");
-    reverseWordsTestHelper("  Hello World");
-    reverseWordsTestHelper("Hello World  ");
-    reverseWordsTestHelper("Hello   World");
-    reverseWordsTestHelper("   Hello    World   Hello    World   Hello    World   Hello    World   Hello    World   Hello    World   ");
-    cout << endl;
-}
-
-void palindromeTestHelper(string str)
-{
-    Solution s;
-    cout << '"' << str << '"';
-    if (s.isPalindrome(str))
-        cout << "is Palindrome";
-    else
-        cout << "is no Palindrome";
-    cout << endl;
-}
-
-void palindromeTest()
-{
-    cout << "==Test palindrome()==" << endl;
-    palindromeTestHelper("");
-    palindromeTestHelper("aA");
-    palindromeTestHelper("A man, a plan, a canal: Panama");
-    palindromeTestHelper("Hello World!");
-    cout << endl;
-}
-
-void multiplyTestHelper(string a, string b)
-{
-    Solution s;
-    cout << '"' << a << "\" x \"" << b << "\" = \"" << s.multiply(a, b) << '"' << endl;
-}
-
-void multiplyTest()
-{
-    cout << "==Test multiply()==" << endl;
-    multiplyTestHelper("0", "0");
-    multiplyTestHelper("999", "0");
-    multiplyTestHelper("999", "999");
-    multiplyTestHelper("1", "999");
-    multiplyTestHelper("100", "100");
-    multiplyTestHelper("999", "100");
-    multiplyTestHelper("9999999999999999999", "999999999999999999999999999999");
-    multiplyTestHelper("12345678901234567890123456789012345678901234567890", "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
-    multiplyTestHelper("1234567890", "1234567890");
-    multiplyTestHelper("000", "0000000");
-    multiplyTestHelper("00099", "000001");
-    cout << endl;
-}
 
 int main()
 {
-    reverseWordsTest();
-    palindromeTest();
-    multiplyTest();
+    Solution s;
+
+    s.reverseWordsTest();
+    s.palindromeTest();
+    s.multiplyTest();
+
     return 0;
 }
