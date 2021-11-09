@@ -18,7 +18,7 @@
 
 using namespace std;
 
-typedef vector<pair<size_t, size_t> > BlockData;
+typedef vector<pair<size_t, size_t>> BlockData;
 typedef vector<size_t> BoardData;
 
 class Block
