@@ -67,7 +67,7 @@ private:
     void ClearCell(size_t x, size_t y);
     bool CheckBlock(const Block &block, size_t x, size_t y) const;
     void ClearBlock(const Block &block, size_t x, size_t y);
-    bool FindSolution(const Blocks &blocks, size_t block_index);
+    bool FindSolution(const Blocks &blocks);
 };
 
 Block::Block(const std::string &cells)
@@ -190,8 +190,17 @@ void Board::ClearBlock(const Block &block, size_t x, size_t y)
 }
 
 // This is the core solution
-bool Board::FindSolution(const Blocks &blocks, size_t block_index)
+bool Board::FindSolution(const Blocks &blocks)
 {
+    static size_t block_index = 0;
+
+    // If no block left, solution found!
+    if (block_index == blocks.size())
+    {
+        block_index--;  // Return to the previous block
+        return true;
+    }
+
     const Block &block = blocks[block_index];
 
     size_t xmax = width - block.width;
@@ -204,14 +213,14 @@ bool Board::FindSolution(const Blocks &blocks, size_t block_index)
             // if there is a place for block, process.
             if (SetBlock(block, x, y))
             {
-                // If the block is the last one, solution found.
-                // If not the last one, process other blocks.
-                if (block_index == blocks.size() - 1 || FindSolution(blocks, block_index + 1))
+                block_index++;  // Try the next block
+                if (FindSolution(blocks))
                 {
                     // If all other blocks are positioned correctly, solution found.
                     std::cout << "Step: Put block " << block_index << " at [" << x << ", " << y
                               << "]" << std::endl;
                     block.Print(width, height, x, y, "Block " + std::to_string(block_index));
+                    block_index--;  // Return to the previous block
                     return true;
                 }
                 else
@@ -225,6 +234,7 @@ bool Board::FindSolution(const Blocks &blocks, size_t block_index)
         }
     }
 
+    block_index--;  // Return to the previous block
     return false;
 }
 
@@ -243,7 +253,7 @@ bool Board::Resolve(const Blocks &blocks)
     }
 
     // Find solution
-    bool result = FindSolution(copy, 0);
+    bool result = FindSolution(copy);
 
     std::cout << "count_setblock   = " << count_setblock << std::endl
               << "count_checkblock = " << count_checkblock << std::endl
@@ -352,7 +362,7 @@ int main()
         },
     };
 
-    auto &puzzle = puzzles[4];
+    auto &puzzle = puzzles[3];
     if (!puzzle.Board.Resolve(puzzle.Blocks))
     {
         std::cout << "No solution!" << std::endl;
