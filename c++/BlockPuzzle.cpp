@@ -285,8 +285,6 @@ void Board::Print(const std::string &title) const
     std::cout << std::endl << std::endl;
 }
 
-void puzzle(size_t i) {}
-
 int main()
 {
     struct
