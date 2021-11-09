@@ -11,36 +11,35 @@
 //
 
 #include <iostream>
-#include <iomanip> // setw
+#include <iomanip>   // setw
 #include <algorithm> // sort
 #include <vector>
 #include <string>
 
 using namespace std;
 
-typedef vector<pair<size_t, size_t>> BlockData;
+typedef vector<pair<size_t, size_t> > BlockData;
 typedef vector<size_t> BoardData;
 
 class Block
 {
 public:
-    Block();
+    Block(string x);
     ~Block();
-
-    Block& operator()(size_t x, size_t y);
-    Block& operator()(string x, size_t y = 0);
 
     void Print(string title = "Block");
     void Print(size_t board_width, size_t board_height, size_t x, size_t y, string title = "Block");
-    const BlockData* GetData() const;
+    const BlockData *GetData() const;
 
+private:
+    friend class Board;
+
+    BlockData *data;
     size_t width;
     size_t height;
     double weight;
 
-private:
-
-    BlockData *data;
+    void Set(size_t x, size_t y);
 };
 
 typedef vector<Block *> Blocks;
@@ -74,50 +73,20 @@ private:
     BoardData *data;
 };
 
-Block::Block()
+Block::Block(string cells)
 {
     data = new BlockData();
-
     width = 0;
     height = 0;
     weight = 0;
-}
 
-Block::~Block()
-{
-    delete data;
-}
-
-// Compose a block
-Block& Block::operator()(size_t x, size_t y)
-{
-    data->push_back(make_pair(x, y));
-
-    if (x >= width) width = x + 1;
-    if (y >= height) height = y + 1;
-
-    // B - 2693,         , D - 5956
-    // weight = height * height * width * 1.0 / data->size();
-
-    // B - 1457, C - 3995, D - 4387
-    // weight = data->size() * width * height * height;
-
-    // B - 3017, C - 2185, D - 3365
-    weight = data->size() * width * height;
-
-    return (*this);
-}
-
-// Compose a block
-Block& Block::operator()(string cells, size_t y)
-{
     size_t x = 0;
-
+    size_t y = 0;
     for (auto i = cells.cbegin(); i != cells.cend(); i++)
     {
         if ((*i) == '*')
         {
-            (*this)(x, y);
+            Set(x, y);
         }
         else if ((*i) == '|')
         {
@@ -129,20 +98,41 @@ Block& Block::operator()(string cells, size_t y)
 
         x++;
     }
-
-    return (*this);
 }
 
-inline const BlockData* Block::GetData() const
+Block::~Block()
 {
-    return (const BlockData *) data;
+    delete data;
+}
+
+// Compose a block
+void Block::Set(size_t x, size_t y)
+{
+    data->push_back(make_pair(x, y));
+
+    if (x >= width)
+        width = x + 1;
+    if (y >= height)
+        height = y + 1;
+
+    // B - 2693,         , D - 5956
+    // weight = height * height * width * 1.0 / data->size();
+
+    // B - 1457, C - 3995, D - 4387
+    // weight = data->size() * width * height * height;
+
+    // B - 3017, C - 2185, D - 3365
+    weight = data->size() * width * height;
+}
+
+inline const BlockData *Block::GetData() const
+{
+    return (const BlockData *)data;
 }
 
 void Block::Print(string title)
 {
-    Board b(width, height);
-    b.SetBlock(this, 0, 0);
-    b.Print(title);
+    Print(width, height, 0, 0, title);
 }
 
 void Block::Print(size_t board_width, size_t board_height, size_t block_x, size_t block_y, string title)
@@ -195,8 +185,8 @@ bool Board::SetBlock(Block *b, size_t x, size_t y)
         return false;
     }
 
-    const BlockData* d = b->GetData();
-    for(auto i = d->cbegin(); i != d->cend(); i++)
+    const BlockData *d = b->GetData();
+    for (auto i = d->cbegin(); i != d->cend(); i++)
     {
         SetCell(x + i->first, y + i->second);
     }
@@ -212,8 +202,8 @@ bool Board::CheckBlock(Block *b, size_t x, size_t y)
     if (b->width + x > width || b->height + y > height)
         return false;
 
-    const BlockData* d = b->GetData();
-    for(auto i = d->cbegin(); i != d->cend(); i++)
+    const BlockData *d = b->GetData();
+    for (auto i = d->cbegin(); i != d->cend(); i++)
     {
         if (!CheckCell(i->first + x, i->second + y))
         {
@@ -227,8 +217,8 @@ bool Board::CheckBlock(Block *b, size_t x, size_t y)
 // Clear the block from board
 void Board::ClearBlock(Block *b, size_t x, size_t y)
 {
-    const BlockData* d = b->GetData();
-    for(auto i = d->cbegin(); i != d->cend(); i++)
+    const BlockData *d = b->GetData();
+    for (auto i = d->cbegin(); i != d->cend(); i++)
     {
         ClearCell(x + i->first, y + i->second);
     }
@@ -237,7 +227,7 @@ void Board::ClearBlock(Block *b, size_t x, size_t y)
 // This is the core solution
 bool Board::RecursiveSetBlock(Blocks &bs, size_t block_index)
 {
-    Block* block = bs[block_index];
+    Block *block = bs[block_index];
 
     size_t xmax = width - block->width;
     size_t ymax = height - block->height;
@@ -289,9 +279,7 @@ bool Board::Unblock(Blocks bs)
 
     // Sort Blocks by block weight
     sort(bs.begin(), bs.end(), [](Block *a, Block *b)
-    {
-        return (a->weight > b->weight);
-    });
+         { return (a->weight > b->weight); });
 
     for (auto i = bs.cbegin(); i != bs.cend(); i++)
     {
@@ -311,7 +299,8 @@ bool Board::Unblock(Blocks bs)
 
 void Board::Print(string title)
 {
-    cout << title << endl << "   ";
+    cout << title << endl
+         << "   ";
 
     for (size_t i = 0; i < width; i++)
     {
@@ -322,7 +311,8 @@ void Board::Print(string title)
     {
         if (i % width == 0)
         {
-            cout << endl << setw(2) << i / width << ' ';
+            cout << endl
+                 << setw(2) << i / width << ' ';
         }
 
         if ((*data)[i])
@@ -335,7 +325,8 @@ void Board::Print(string title)
         }
     }
 
-    cout << endl << endl;
+    cout << endl
+         << endl;
 }
 
 void puzzle_d()
@@ -343,15 +334,15 @@ void puzzle_d()
     Blocks bs;
     Board board(10, 6);
 
-    bs.push_back(&(*(new Block()))("*****|* *"));
-    bs.push_back(&(*(new Block()))(" ***|***|  *"));
-    bs.push_back(&(*(new Block()))(" **|***| **"));
-    bs.push_back(&(*(new Block()))(" *|**|*|*"));
-    bs.push_back(&(*(new Block()))(" *|****| *"));
-    bs.push_back(&(*(new Block()))("*|***|  **|  *"));
-    bs.push_back(&(*(new Block()))("*|***| **|  *"));
-    bs.push_back(&(*(new Block()))(" * **|****"));
-    bs.push_back(&(*(new Block()))("  **|*****"));
+    bs.push_back(new Block("*****|* *"));
+    bs.push_back(new Block(" ***|***|  *"));
+    bs.push_back(new Block(" **|***| **"));
+    bs.push_back(new Block(" *|**|*|*"));
+    bs.push_back(new Block(" *|****| *"));
+    bs.push_back(new Block("*|***|  **|  *"));
+    bs.push_back(new Block("*|***| **|  *"));
+    bs.push_back(new Block(" * **|****"));
+    bs.push_back(new Block("  **|*****"));
 
     cout << "---------- Puzzle D ----------" << endl;
 
@@ -371,14 +362,14 @@ void puzzle_e()
     Blocks bs;
     Board board(5, 6);
 
-    bs.push_back(&(*(new Block()))("**"));
-    bs.push_back(&(*(new Block()))("***"));
-    bs.push_back(&(*(new Block()))("****"));
-    bs.push_back(&(*(new Block()))("*|**| *"));
-    bs.push_back(&(*(new Block()))("*|*|**"));
-    bs.push_back(&(*(new Block()))("*|**|*"));
-    bs.push_back(&(*(new Block()))("**|*"));
-    bs.push_back(&(*(new Block()))("** *| ***"));
+    bs.push_back(new Block("**"));
+    bs.push_back(new Block("***"));
+    bs.push_back(new Block("****"));
+    bs.push_back(new Block("*|**| *"));
+    bs.push_back(new Block("*|*|**"));
+    bs.push_back(new Block("*|**|*"));
+    bs.push_back(new Block("**|*"));
+    bs.push_back(new Block("** *| ***"));
 
     cout << "---------- Puzzle E ----------" << endl;
 
@@ -398,14 +389,14 @@ void puzzle_f()
     Blocks bs;
     Board board(10, 3);
 
-    bs.push_back(&(*(new Block()))("***|* *"));
-    bs.push_back(&(*(new Block()))("*|***"));
-    bs.push_back(&(*(new Block()))(" **|**"));
-    bs.push_back(&(*(new Block()))("*|*"));
-    bs.push_back(&(*(new Block()))("****|   *"));
-    bs.push_back(&(*(new Block()))("**|**"));
-    bs.push_back(&(*(new Block()))(" *|**"));
-    bs.push_back(&(*(new Block()))("***"));
+    bs.push_back(new Block("***|* *"));
+    bs.push_back(new Block("*|***"));
+    bs.push_back(new Block(" **|**"));
+    bs.push_back(new Block("*|*"));
+    bs.push_back(new Block("****|   *"));
+    bs.push_back(new Block("**|**"));
+    bs.push_back(new Block(" *|**"));
+    bs.push_back(new Block("***"));
 
     cout << "---------- Puzzle F ----------" << endl;
 
@@ -425,14 +416,14 @@ void puzzle_g()
     Blocks bs;
     Board board(6, 5);
 
-    bs.push_back(&(*(new Block()))("***|*"));
-    bs.push_back(&(*(new Block()))("****"));
-    bs.push_back(&(*(new Block()))(" *|**|*"));
-    bs.push_back(&(*(new Block()))("*|**"));
-    bs.push_back(&(*(new Block()))("***"));
-    bs.push_back(&(*(new Block()))("**|**"));
-    bs.push_back(&(*(new Block()))("*|*"));
-    bs.push_back(&(*(new Block()))("  *|* *|***"));
+    bs.push_back(new Block("***|*"));
+    bs.push_back(new Block("****"));
+    bs.push_back(new Block(" *|**|*"));
+    bs.push_back(new Block("*|**"));
+    bs.push_back(new Block("***"));
+    bs.push_back(new Block("**|**"));
+    bs.push_back(new Block("*|*"));
+    bs.push_back(new Block("  *|* *|***"));
 
     cout << "---------- Puzzle G ----------" << endl;
 
@@ -452,14 +443,14 @@ void puzzle_h()
     Blocks bs;
     Board board(6, 5);
 
-    bs.push_back(&(*(new Block()))("***|*"));
-    bs.push_back(&(*(new Block()))(" *|***"));
-    bs.push_back(&(*(new Block()))(" *|**| *| *"));
-    bs.push_back(&(*(new Block()))("**|*"));
-    bs.push_back(&(*(new Block()))("*****"));
-    bs.push_back(&(*(new Block()))("*|*"));
-    bs.push_back(&(*(new Block()))("**|**"));
-    bs.push_back(&(*(new Block()))("*|*|*"));
+    bs.push_back(new Block("***|*"));
+    bs.push_back(new Block(" *|***"));
+    bs.push_back(new Block(" *|**| *| *"));
+    bs.push_back(new Block("**|*"));
+    bs.push_back(new Block("*****"));
+    bs.push_back(new Block("*|*"));
+    bs.push_back(new Block("**|**"));
+    bs.push_back(new Block("*|*|*"));
 
     cout << "---------- Puzzle H ----------" << endl;
 
@@ -479,14 +470,14 @@ void puzzle_i()
     Blocks bs;
     Board board(5, 6);
 
-    bs.push_back(&(*(new Block()))("***"));
-    bs.push_back(&(*(new Block()))("***| *| *"));
-    bs.push_back(&(*(new Block()))("**|**"));
-    bs.push_back(&(*(new Block()))("*|**"));
-    bs.push_back(&(*(new Block()))(" **| *|**"));
-    bs.push_back(&(*(new Block()))("*|*"));
-    bs.push_back(&(*(new Block()))("***|  *"));
-    bs.push_back(&(*(new Block()))("*|**| *"));
+    bs.push_back(new Block("***"));
+    bs.push_back(new Block("***| *| *"));
+    bs.push_back(new Block("**|**"));
+    bs.push_back(new Block("*|**"));
+    bs.push_back(new Block(" **| *|**"));
+    bs.push_back(new Block("*|*"));
+    bs.push_back(new Block("***|  *"));
+    bs.push_back(new Block("*|**| *"));
 
     cout << "---------- Puzzle I ----------" << endl;
 
