@@ -6,15 +6,10 @@ CXXFLAGS  = -Wall -O2 -std=c++17
 GMPFLAGS  = -lgmp -lgmpxx
 
 # Executables
-EXES      = BinarySearchTree BlockPuzzle Factorial FactorialGMP Hex2Dec QuickSort StringProblems
+EXES      = BlockPuzzle Factorial FactorialGMP Hex2Dec QuickSort
 
 # Targets
 all: $(EXES)
-
-BinarySearchTree: BinarySearchTree.cpp
-	@echo "==>Compiling" $<
-	$(CXX)  $(CXXFLAGS)  $<  -o $@
-	@echo
 
 BlockPuzzle: BlockPuzzle.cpp
 	@echo "==>Compiling" $<
@@ -37,11 +32,6 @@ Hex2Dec: Hex2Dec.cpp
 	@echo
 
 QuickSort: QuickSort.cpp Stopwatch.h
-	@echo "==>Compiling" $<
-	$(CXX)  $(CXXFLAGS)  $<  -o $@
-	@echo
-
-StringProblems: StringProblems.cpp
 	@echo "==>Compiling" $<
 	$(CXX)  $(CXXFLAGS)  $<  -o $@
 	@echo
