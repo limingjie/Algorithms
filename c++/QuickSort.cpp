@@ -10,8 +10,8 @@
 //
 
 #include <iostream>
-#include <random> // minstd_rand0 & uniform_real_distribution
-#include "Stopwatch.hpp" // Stopwatch
+#include <random>      // minstd_rand0 & uniform_real_distribution
+#include "Stopwatch.h" // Stopwatch
 
 template <typename T>
 void print(T *arr, int size)
@@ -66,8 +66,10 @@ int hoare_partition(T *arr, int left, int right)
 
     while (true)
     {
-        while (arr[left] < pivot) left++;
-        while (right >= left && arr[right] >= pivot) right--;
+        while (arr[left] < pivot)
+            left++;
+        while (right >= left && arr[right] >= pivot)
+            right--;
 
         if (left < right)
         {
@@ -75,7 +77,8 @@ int hoare_partition(T *arr, int left, int right)
         }
         else
         {
-            if (left != keep) swap(arr[left], arr[keep]);
+            if (left != keep)
+                swap(arr[left], arr[keep]);
             break;
         }
     }
@@ -119,20 +122,22 @@ void quicksort(T *arr, int left, int right)
 int main()
 {
     const int OutterLoop = 5;
-    const int InnerLoop  = 1000;
-    const int ArraySize  = 100000;
+    const int InnerLoop = 1000;
+    const int ArraySize = 100000;
     double arr[ArraySize];
 
     auto seed = std::chrono::high_resolution_clock::now()
-                .time_since_epoch().count();
+                    .time_since_epoch()
+                    .count();
     std::minstd_rand0 generator(seed);
     std::uniform_real_distribution<double> distribution(10.00, 99.99);
 
     std::cout << "Loop " << OutterLoop << " times." << std::endl;
     for (int k = 0; k < OutterLoop; k++)
     {
-        std::cout << std::endl << "QuickSort " << ArraySize << " double numbers "
-            << InnerLoop << " times." << std::endl;
+        std::cout << std::endl
+                  << "QuickSort " << ArraySize << " double numbers "
+                  << InnerLoop << " times." << std::endl;
 
         Stopwatch<double> time("Total");
         Stopwatch<double> time_sort("QuickSort");
