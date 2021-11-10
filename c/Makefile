@@ -11,12 +11,9 @@ EXES      = Calc SinX
 # Targets
 all: $(EXES)
 
-Calc: Calc.c
-	@echo "==>Compiling" $<
-	$(CC)  $(CFLAGS)  $<  -o $@
-	@echo
-
-SinX: SinX.c
+# Pattern Rule - Override the Built-In Implicit Rule
+# https://www.gnu.org/software/make/manual/html_node/Catalogue-of-Rules.html
+%: %.c
 	@echo "==>Compiling" $<
 	$(CC)  $(CFLAGS)  $<  -o $@
 	@echo

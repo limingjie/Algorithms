@@ -11,12 +11,9 @@ EXES      = BlockPuzzle Factorial FactorialGMP Hex2Dec QuickSort
 # Targets
 all: $(EXES)
 
-BlockPuzzle: BlockPuzzle.cpp
-	@echo "==>Compiling" $<
-	$(CXX)  $(CXXFLAGS)  $<  -o $@
-	@echo
-
-Factorial: Factorial.cpp
+# Pattern Rule - Override the Built-In Implicit Rule
+# https://www.gnu.org/software/make/manual/html_node/Catalogue-of-Rules.html
+%: %.cpp
 	@echo "==>Compiling" $<
 	$(CXX)  $(CXXFLAGS)  $<  -o $@
 	@echo
@@ -24,16 +21,6 @@ Factorial: Factorial.cpp
 FactorialGMP: FactorialGMP.cpp
 	@echo "==>Compiling" $<
 	$(CXX)  $(CXXFLAGS)  $(GMPFLAGS)  $<  -o $@
-	@echo
-
-Hex2Dec: Hex2Dec.cpp
-	@echo "==>Compiling" $<
-	$(CXX)  $(CXXFLAGS)  $<  -o $@
-	@echo
-
-QuickSort: QuickSort.cpp Stopwatch.h
-	@echo "==>Compiling" $<
-	$(CXX)  $(CXXFLAGS)  $<  -o $@
 	@echo
 
 clean:
