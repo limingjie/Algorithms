@@ -1,7 +1,7 @@
 //
 // Solution to Game BlockPuzzle
 //
-// Author: Mingjie Li (limingjie0719@gmail.com)
+// Author: Mingjie Li (limingjie@outlook.com)
 // Date  : Aug 27, 2013
 //
 // TODO: GUI
@@ -27,6 +27,7 @@ class Block
 {
 public:
     Block(const std::string &cells);
+    ~Block();
 
     void Print(const std::string &title = "Block") const;
     void Print(size_t board_width, size_t board_height, size_t x, size_t y,
@@ -50,6 +51,7 @@ class Board
 {
 public:
     Board(size_t width, size_t height);
+    ~Board();
 
     bool Resolve(const Blocks &blocks);
     bool SetBlock(const Block &block, size_t x, size_t y);
@@ -100,6 +102,11 @@ Block::Block(const std::string &cells)
     weight = data.size() * width * height;
 }
 
+Block::~Block()
+{
+    // std::cout << "Block Released." << std::endl;
+}
+
 // Compose a block
 void Block::SetCell(size_t x, size_t y)
 {
@@ -125,6 +132,11 @@ Board::Board(size_t width, size_t height)
     this->height = height;
 
     data = BoardData(width * height, 0);
+}
+
+Board::~Board()
+{
+    // std::cout << "Board Released." << std::endl;
 }
 
 // SetCell cell (x, y) = 1
@@ -203,12 +215,12 @@ bool Board::FindSolution(const Blocks &blocks)
 
     const Block &block = blocks[block_index];
 
-    size_t xmax = width - block.width;
-    size_t ymax = height - block.height;
+    size_t x_max = width - block.width;
+    size_t y_max = height - block.height;
 
-    for (size_t x = 0; x <= xmax; x++)
+    for (size_t x = 0; x <= x_max; x++)
     {
-        for (size_t y = 0; y <= ymax; y++)
+        for (size_t y = 0; y <= y_max; y++)
         {
             // if there is a place for block, process.
             if (SetBlock(block, x, y))
@@ -217,19 +229,16 @@ bool Board::FindSolution(const Blocks &blocks)
                 if (FindSolution(blocks))
                 {
                     // If all other blocks are positioned correctly, solution found.
-                    std::cout << "Step: Put block " << block_index << " at [" << x << ", " << y
-                              << "]" << std::endl;
+                    std::cout << "Step: Put block " << block_index << " on [" << x << ", " << y
+                              << "]\n";
                     block.Print(width, height, x, y, "Block " + std::to_string(block_index));
                     block_index--;  // Return to the previous block
                     return true;
                 }
-                else
-                {
-                    // If not able to found a solution for other blocks, rollback current block,
-                    // and continually find next available position for current block.
-                    ClearBlock(block, x, y);
-                    continue;
-                }
+
+                // If not able to found a solution for other blocks, rollback current block,
+                // and continually find next available position for current block.
+                ClearBlock(block, x, y);
             }
         }
     }
@@ -255,17 +264,17 @@ bool Board::Resolve(const Blocks &blocks)
     // Find solution
     bool result = FindSolution(copy);
 
-    std::cout << "count_setblock   = " << count_setblock << std::endl
-              << "count_checkblock = " << count_checkblock << std::endl
-              << "count_setcell    = " << count_setcell << std::endl
-              << "count_checkcell  = " << count_checkcell << std::endl;
+    std::cout << "count_setblock   = " << count_setblock
+              << "\ncount_checkblock = " << count_checkblock
+              << "\ncount_setcell    = " << count_setcell
+              << "\ncount_checkcell  = " << count_checkcell << std::endl;
 
     return result;
 }
 
 void Board::Print(const std::string &title) const
 {
-    std::cout << title << std::endl << "   ";
+    std::cout << title << "\n   ";
 
     for (size_t i = 0; i < width; i++)
     {
@@ -276,13 +285,13 @@ void Board::Print(const std::string &title) const
     {
         if (i % width == 0)
         {
-            std::cout << std::endl << std::setw(2) << i / width << ' ';
+            std::cout << '\n' << std::setw(2) << i / width << ' ';
         }
 
         std::cout << (data[i] ? "[]" : "__");
     }
 
-    std::cout << std::endl << std::endl;
+    std::cout << '\n' << std::endl;
 }
 
 int main()
@@ -360,7 +369,7 @@ int main()
         },
     };
 
-    auto &puzzle = puzzles[3];
+    auto &puzzle = puzzles[4];
     if (!puzzle.Board.Resolve(puzzle.Blocks))
     {
         std::cout << "No solution!" << std::endl;
