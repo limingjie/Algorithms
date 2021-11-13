@@ -54,9 +54,9 @@ public:
     Board(size_t width, size_t height);
     ~Board();
 
-    Solution Solve(const std::vector<Block> &blocks);
-    bool     SetBlock(const Block &block, size_t x, size_t y);
-    void     Print() const;
+    const Solution &Solve(const std::vector<Block> &blocks);
+    bool            SetBlock(const Block &block, size_t x, size_t y);
+    void            Print() const;
 
 private:
     std::vector<size_t> data;
@@ -247,7 +247,7 @@ bool Board::Search(const std::vector<Block> &blocks)
 }
 
 // Start solving the problem.
-Board::Solution Board::Solve(const std::vector<Block> &blocks)
+const Board::Solution &Board::Solve(const std::vector<Block> &blocks)
 {
     std::vector<Block> copy(blocks);
 
